@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'kuldeepAPI.apps.KuldeepapiConfig'
+    'kuldeepAPI.apps.KuldeepapiConfig',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
