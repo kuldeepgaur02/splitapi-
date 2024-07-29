@@ -340,13 +340,13 @@ To set up and run the Django project with Django REST Framework:
 - **Description:** Find the expenses related to the partucular Uid .
 - **Response Format:**
     ```json
-    {
-    "message": "{
+    
+    "message": {
                 "total_paid": 4600.0,
                 "total_owed": 1760.0,
                 "total_balance": 2840.0,
                 "expenses": [
-                    {}]"  
+                    {}]
     }
     ```
 
@@ -357,14 +357,14 @@ To set up and run the Django project with Django REST Framework:
 - **Response Format:**
     ```json
     {
-    "message": "
+    "message": 
                 {
                 "Kuldeep Gour ": 2840.0,
                 "Vanshaj Duggal ": -924.0,
                 "David Dan": -1016.0,
                 "Rajesh Gour": -900.0,
                 "John Doe": 0
-            } "
+            } 
     }
     ```
 
