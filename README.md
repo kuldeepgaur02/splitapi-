@@ -11,6 +11,7 @@ different methods: exact amounts, percentages, and equal splits.
 ```
 SplitAPI/
 .
+├── Back end Intern Assignment (1).pdf
 ├── README.md
 ├── db.sqlite3
 ├── kuldeepAPI
@@ -47,7 +48,6 @@ SplitAPI/
     ├── settings.py
     ├── urls.py
     └── wsgi.py
-
 ```
 
 
