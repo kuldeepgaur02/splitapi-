@@ -349,10 +349,7 @@ To set up and run the Django project with Django REST Framework:
 - **Endpoint:** `/download_balance_sheet`
 - **Method:** GET
 - **Description:** Download the balance sheet  .
-- **Response Format:**
-    ```json
-   
-    ```
+
 
 
 
