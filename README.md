@@ -206,7 +206,7 @@ To set up and run the Django project with Django REST Framework:
 - **Method:** GET  
 - **Description:** Retrieves a list of all users.  
 
-    {
+    
 - **Response Format:**
     ```json 
     "users": [
@@ -334,6 +334,8 @@ To set up and run the Django project with Django REST Framework:
     }
     ```
 
+### 4. Get Expenses of particular User 
+
 **Individaul Expenses**
 - **Endpoint:** `/expenses/id`
 - **Method:** GET
@@ -350,22 +352,33 @@ To set up and run the Django project with Django REST Framework:
     }
     ```
 
+### 5.Get Overall Expenses 
+
 **Overall Expenses**
 - **Endpoint:** `/expenses`
 - **Method:** GET
-- **Description:** Find the expenses related to the partucular Uid .
+- **Description:** Find the overall expenses for all the User  .
 - **Response Format:**
     ```json
     {
     "message": 
                 {
                 "Kuldeep Gour ": 2840.0,
-                "Vanshaj Duggal ": -924.0,
-                "David Dan": -1016.0,
-                "Rajesh Gour": -900.0,
-                "John Doe": 0
+                "Vanshaj Duggal ": 924.0,
+                "David Dan": 1016.0,
+                "Rajesh Gour": 900.0
             } 
     }
+    ```
+
+### 6.Get CSV for the Expenses of all the User
+**Overall Expenses**
+- **Endpoint:** `/download_balance_sheet`
+- **Method:** GET
+- **Description:** Download the balance sheet  .
+- **Response Format:**
+    ```json
+   
     ```
 
 
