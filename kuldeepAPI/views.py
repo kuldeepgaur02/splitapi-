@@ -1,7 +1,7 @@
-
-
 from django.http import HttpResponse
 from .models import User, Expense, ExpensePaidBy, ExpenseOwedBy
+import csv
+
 from .serializers import (
     UserSerializer,
     ExpenseSerializer,
@@ -327,3 +327,24 @@ def add_user(request):
     except IntegrityError:
         # Return error response if the email already exists
         return Response({'error': 'Email address already exists.'}, status=status.HTTP_400_BAD_REQUEST)
+    
+
+@api_view(['GET'])
+def download_balance_sheet(request):
+    users = User.objects.all()
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="balance_sheet.csv"'
+    writer = csv.writer(response)
+    writer.writerow(['User', 'Total Paid', 'Total Owed', 'Balance'])
+
+    for user in users:
+        expenses_paid = (
+            ExpensePaidBy.objects.filter(userId_id=user.userId).aggregate(total_paid=Sum("amount"))["total_paid"] or 0
+        )
+        expenses_owed = (
+            ExpenseOwedBy.objects.filter(userId_id=user.userId).aggregate(total_owed=Sum("amount"))["total_owed"] or 0
+        )
+        balance = expenses_paid - expenses_owed
+        writer.writerow([user.name, expenses_paid, expenses_owed, balance])
+
+    return response
