@@ -1,8 +1,7 @@
 
+
 from django.http import HttpResponse
-
 from .models import User, Expense, ExpensePaidBy, ExpenseOwedBy
-
 from .serializers import (
     UserSerializer,
     ExpenseSerializer,
@@ -39,9 +38,8 @@ def user_profile(request):
     return render(request, 'profile.html')
 
 
-
+# Create your views here.
 def homePage(request):
-    
     # return HttpResponse("Welcome to my Django Project")
     return render(request, "index.html")
 
@@ -52,15 +50,12 @@ def allUser(request):
 
 
 class UserListCreateAPIView(generics.ListCreateAPIView):
-    
     queryset = User.objects.all()
-    
     serializer_class = UserSerializer
 
 
 def validate_exp_type(exp_type):
     if exp_type not in ["EQUAL", "EXACT", "PERCENT"]:
-        
         raise ValueError("Expense type must be one of: EQUAL, EXACT, PERCENT.")
 
 
@@ -100,37 +95,40 @@ def add_expense(request):
     exp_type = request.data.get("expense_type")
     desc = request.data.get("desc")
     amt = request.data.get("total_amount")
-    paid_by = request.data.get("paid_by")
-    owed_by = request.data.get("owed_by")
+    paid_by = request.data.get("paidBy")
     created_by_id = request.data.get("created_by_id")
 
-    # getting user ids from the database 
+    # Get list of user IDs from the database
     uid_list = list(User.objects.values_list("userId", flat=True))
 
-    # the validation functions 
-    
+    # Define validation functions
     def validate_input():
         validate_exp_type(exp_type)
         validate_desc(desc)
         validate_total_amt(amt)
         validate_user_ids(paid_by, uid_list, "paid_by")
-        validate_user_ids(owed_by, uid_list, "owed_by")
         validate_total(paid_by, amt)
-        if exp_type == "EQUAL":
-            validate_total(owed_by, 0)
-        elif exp_type == "EXACT":
-            validate_total(owed_by, amt)
-        elif exp_type == "PERCENT":
-            validate_total(owed_by, 100)
         validate_created_by(created_by_id, uid_list)
 
-       
-        if len(paid_by) > 1000 or len(owed_by) > 1000:
+        if exp_type == "EQUAL":
+            # Ensure there is no `owedBy` in the request for EQUAL type
+            if request.data.get("owedBy"):
+                raise ValueError("Owed_by should not be provided for EQUAL expense type.")
+        elif exp_type == "EXACT" or exp_type == "PERCENT":
+            owed_by = request.data.get("owedBy")
+            if owed_by is not None:
+                validate_user_ids(owed_by, uid_list, "owed_by")
+                if exp_type == "EXACT":
+                    validate_total(owed_by, amt)
+                elif exp_type == "PERCENT":
+                    validate_total(owed_by, 100)
+
+        # Check maximum number of participants
+        if len(paid_by) > 1000 or (request.data.get("owedBy") is not None and len(request.data.get("owedBy")) > 1000):
             raise ValueError(
                 "The maximum number of participants for an expense is 1000.")
 
-        # check for maximum amount 
-        
+        # Check maximum amount for an expense
         if amt > 100000000:
             raise ValueError(
                 "The maximum amount for an expense is INR 1,00,00,000.")
@@ -141,7 +139,7 @@ def add_expense(request):
     except ValueError as e:
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-
+    # Create and save the new expense object
     expense = Expense.objects.create(
         desc=desc, amount=amt, createdById_id=created_by_id
     )
@@ -163,37 +161,40 @@ def add_expense(request):
     # Create ExpenseOwedBy objects based on expense type
     exp_owed = []
     if exp_type == "EQUAL":
-        # Calculate equal amount owed by each user
-        val = round(amt / len(uid_list), 2)
-        thresh = amt - val * len(uid_list)
+        # Calculate equal amount owed by each user involved in the expense
+        involved_users = list(set(list(paid_by.keys())))
+        num_users = len(involved_users)
+        val = round(amt / num_users, 2)
+        thresh = amt - val * num_users
         exp_owed = [
             ExpenseOwedBy(
                 expenseId_id=expense_id,
                 userId_id=int(uid),
                 amount=val + thresh if i == 0 else val,
             )
-            for i, uid in enumerate(uid_list)
+            for i, uid in enumerate(involved_users)
         ]
-    elif exp_type == "EXACT":
-        # Create ExpenseOwedBy objects with exact amounts owed
-        exp_owed = [
-            ExpenseOwedBy(
-                expenseId_id=expense_id,
-                userId_id=int(uid),
-                amount=round(val, 2)
-            )
-            for uid, val in owed_by.items()
-        ]
-    elif exp_type == "PERCENT":
-        # Create ExpenseOwedBy objects with amounts calculated based on percentage
-        exp_owed = [
-            ExpenseOwedBy(
-                expenseId_id=expense_id,
-                userId_id=int(uid),
-                amount=round((amt * val) / 100, 2),
-            )
-            for uid, val in owed_by.items()
-        ]
+    elif exp_type == "EXACT" or exp_type == "PERCENT":
+        owed_by = request.data.get("owedBy")
+        if owed_by is not None:
+            if exp_type == "EXACT":
+                exp_owed = [
+                    ExpenseOwedBy(
+                        expenseId_id=expense_id,
+                        userId_id=int(uid),
+                        amount=round(val, 2)
+                    )
+                    for uid, val in owed_by.items()
+                ]
+            elif exp_type == "PERCENT":
+                exp_owed = [
+                    ExpenseOwedBy(
+                        expenseId_id=expense_id,
+                        userId_id=int(uid),
+                        amount=round((amt * val) / 100, 2),
+                    )
+                    for uid, val in owed_by.items()
+                ]
 
     # Use bulk_create to insert all expenses owed by into the database
     ExpenseOwedBy.objects.bulk_create(exp_owed)
