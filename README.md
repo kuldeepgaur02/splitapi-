@@ -86,6 +86,16 @@ To set up and run the Django project with Django REST Framework:
 
 5. Access the application at [http://localhost:8000/](http://localhost:8000/).
 
+6. For the Convinience added the Requirements File 
+    ```bash 
+    pip install -r requirements.txt
+    ```
+    
+7. For convinience create a conda enviroment with python version 3.12
+    ```bash
+    conda create --name Enviroment_name python=3.12. 
+     
+
 
 
 
