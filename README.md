@@ -205,10 +205,10 @@ To set up and run the Django project with Django REST Framework:
 - **Endpoint:** `/users`  
 - **Method:** GET  
 - **Description:** Retrieves a list of all users.  
-- **Response Format:**
-    ```json
-    {
+
 **Response Format:**
+```json
+{
     "users": [
         {
         "userId": 1,
