@@ -218,7 +218,7 @@ To set up and run the Django project with Django REST Framework:
         },
        
     ]
-    }
+    
     ```
 
 ### 2. Add User
@@ -272,7 +272,7 @@ To set up and run the Django project with Django REST Framework:
 - **Response Format:**
     ```json
     {
-    "message": "Expense split Exact  added successfully"  // or details of any errors
+    "message": "Expense split Exact  added successfully"  
     }
     ```
 
@@ -301,7 +301,7 @@ To set up and run the Django project with Django REST Framework:
 - **Response Format:**
     ```json
     {
-    "message": "Expense split exactly added successfully"  // or details of any errors
+    "message": "Expense split exactly added successfully"  
     }
     ```
 
@@ -330,7 +330,7 @@ To set up and run the Django project with Django REST Framework:
 - **Response Format:**
     ```json
     {
-    "message": "Expense split by percentage added successfully"  // or details of any errors
+    "message": "Expense split by percentage added successfully"  
     }
     ```
 
@@ -346,7 +346,7 @@ To set up and run the Django project with Django REST Framework:
                 "total_owed": 1760.0,
                 "total_balance": 2840.0,
                 "expenses": [
-                    {}]"  // or details of any errors
+                    {}]"  
     }
     ```
 
@@ -364,7 +364,7 @@ To set up and run the Django project with Django REST Framework:
                 "David Dan": -1016.0,
                 "Rajesh Gour": -900.0,
                 "John Doe": 0
-            }  // or details of any errors
+            } "
     }
     ```
 
