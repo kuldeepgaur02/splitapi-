@@ -106,33 +106,6 @@ To set up and run the Django project with Django REST Framework:
 ```
 
 
-### User Class
-
-- **userId**
-- name
-- email
-- mobileNumber
-
-### Expense Class
-
-- **expenseId**
-- desc
-- amount
-- createdById
-- createdAt
-
-### ExpensePaidBy Class
-
-- **userId**
-- **expenseId**
-- amount
-
-### ExpenseOwedBy Class
-
-- **userId**
-- **expenseId**
-- amount
-
 ## Database Model
 
 ### User
